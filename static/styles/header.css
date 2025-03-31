@@ -1,0 +1,102 @@
+header {
+    padding: 200px 20px 300px 0;
+    text-align: center;
+    position: relative;
+}
+
+.header-content h1 {
+    font-size: 4rem;
+    color: #1F7D53;
+    text-shadow: 0 0 15px #1F7D53;
+}
+
+.header-content p {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin: 10px 0 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    opacity: 0;
+    /* Start hidden for entrance animation */
+    animation: slideIn 1s ease-out forwards 0.5s;
+    /* Entrance animation */
+}
+
+.nav-link {
+    position: relative;
+    color: #1F7D53;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.nav-link span {
+    position: relative;
+    z-index: 1;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 50%;
+    background: #1F7D53;
+    transition: width 0.4s ease, left 0.4s ease;
+}
+
+.nav-link:hover {
+    color: #1F7D53;
+    transform: scale(1.1);
+    /* Slight scale on hover */
+    text-shadow: 0 0 10px rgba(173, 73, 225, 0.7);
+    /* Glow effect */
+}
+
+.nav-link:hover::after {
+    width: 100%;
+    /* Sliding underline */
+    left: 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0% {
+        text-shadow: 0 0 5px rgba(0, 234, 255, 0.5);
+    }
+
+    50% {
+        text-shadow: 0 0 15px rgba(0, 234, 255, 0.8);
+    }
+
+    100% {
+        text-shadow: 0 0 5px rgba(0, 234, 255, 0.5);
+    }
+}
+
+/* Optional: Add pulse glow to active link */
+.nav-link:active {
+    animation: pulseGlow 0.8s infinite;
+}
+
+
+html {
+    scroll-behavior: smooth;
+    /* CSS smooth scrolling for modern browsers */
+}

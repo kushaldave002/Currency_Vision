@@ -1,0 +1,106 @@
+#simulator {
+    --canvas-width: 900px;
+    --canvas-height: 580px;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.simulator-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    max-width: 1300px;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+}
+
+.canvas-wrapper {
+    position: relative;
+    width: var(--canvas-width);
+    background: #252525;
+    border: 1px solid #1F7D53;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.canvas-wrapper h3 {
+    color: #1F7D53;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 1.2rem;
+}
+
+#shadow-canvas {
+    display: block;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
+    background: #252525;
+}
+
+.results-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    width: var(--canvas-width);
+}
+
+.label, .result {
+    width: 50%;
+    text-align: center;
+}
+
+.simulator-grid {
+    /* Assuming this is your container */
+    position: relative;
+    display: grid;
+    /* Add any existing grid properties you might have */
+}
+
+.simulator-grid button {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    background-color: #1F7D53; /* Matches your existing green */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Slightly less than canvas-wrapper's 10px */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 200px; /* Fixed width for consistency */
+    text-align: center;
+    margin-bottom: 20px; /* Space between button and content below */
+}
+
+/* Hover effect */
+.simulator-grid button:hover {
+    background-color: #1a6b46; /* Darker shade of the green */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Active/click effect */
+.simulator-grid button:active {
+    background-color: #155c3b; /* Even darker shade */
+    transform: translateY(0); /* Return to original position */
+}
+
+/* Ensure proper positioning within simulator-grid */
+.simulator-grid {
+    position: relative;
+    display: flex; /* Keep your original flex display */
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    max-width: 1300px;
+}
