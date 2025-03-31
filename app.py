@@ -10,18 +10,20 @@ from ultralytics import YOLO
 from fpdf import FPDF
 from collections import Counter
 import torch
-import torch.nn as nn
-from ultralytics.nn.modules import Conv
+# Import Conv from ultralytics; this must match the package structure in ultralytics==8.0.61.
+from ultralytics.nn.modules.conv import Conv
 
-# Initialize the Flask application
+# Add Conv to the safe globals for torch.load so that the weights load properly.
+torch.serialization.add_safe_globals([Conv])
+
 app = Flask(__name__, static_folder='static')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Initialize YOLOv8 model
-model = YOLO("best (1).pt")  # Update path to your model weights if necessary
+# Initialize YOLO model with your weights file.
+model = YOLO("best (1).pt")  # Ensure this path is correct relative to your project
 
-# Define class mapping (banknote labels and denominations)
+# Define class mapping (currency labels, currencies, and denominations)
 class_mapping = {
     0: {"label": "50 USD", "currency": "USD", "denomination": 50},
     1: {"label": "5 USD", "currency": "USD", "denomination": 5},
@@ -51,20 +53,17 @@ class_mapping = {
     25: {"label": "5 EURO", "currency": "EURO", "denomination": 5},
 }
 
-# Define conversion rate function to get exchange rates
 def get_conversion_rate(base, target):
     try:
         res = requests.get(f"https://api.exchangerate-api.com/v4/latest/{base}")
         return res.json()["rates"].get(target, 1)
-    except:
+    except Exception:
         return 1
 
-# Define the home route
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Upload endpoint
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files.get('file')
@@ -76,7 +75,7 @@ def upload():
     path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(path)
 
-    # YOLO prediction
+    # Run YOLO prediction on the uploaded image
     results = model.predict(source=path, conf=0.25, imgsz=1260)
     result = results[0]
     image = cv2.imread(path)
@@ -90,7 +89,7 @@ def upload():
     orig_pil = Image.open(path)
     thumb_paths = {}
 
-    # Save one thumbnail per class
+    # Create thumbnails for each detected class
     for i, cls in enumerate(cls_arr.astype(int)):
         if cls in thumb_paths:
             continue
@@ -121,7 +120,7 @@ def upload():
             "Thumbnail": thumb_paths.get(cls, "")
         })
 
-    # Currency totals & conversion
+    # Calculate totals and perform currency conversion
     totals_by_currency = {}
     for row in rows_list:
         totals_by_currency[row["Currency"]] = totals_by_currency.get(row["Currency"], 0) + row["Total"]
@@ -131,7 +130,7 @@ def upload():
         rate = get_conversion_rate(cur, target_currency)
         converted_total += amt * rate
 
-    # Generate PDF Report
+    # Generate a PDF report with the results
     report_path = os.path.join(app.config['UPLOAD_FOLDER'], "report.pdf")
     pdf = FPDF()
     pdf.add_page()
@@ -176,11 +175,9 @@ def upload():
         "report_url": "/download-report"
     })
 
-# Endpoint for downloading the report
 @app.route('/download-report')
 def download_report():
     return send_file(os.path.join(app.config['UPLOAD_FOLDER'], 'report.pdf'), as_attachment=True)
 
-# Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
