@@ -13,15 +13,13 @@ import torch
 # Import Conv from ultralytics; this must match the package structure in ultralytics==8.0.61.
 from ultralytics.nn.modules.conv import Conv
 
-# Add Conv to the safe globals for torch.load so that the weights load properly.
-torch.serialization.add_safe_globals([Conv])
 
 app = Flask(__name__, static_folder='static')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize YOLO model with your weights file.
-model = YOLO("best (1).pt")  # Ensure this path is correct relative to your project
+model = YOLO("model.pt")  # Ensure this path is correct relative to your project
 
 # Define class mapping (currency labels, currencies, and denominations)
 class_mapping = {
